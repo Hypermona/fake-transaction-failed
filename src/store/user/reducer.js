@@ -1,10 +1,10 @@
-import { GET_USER } from "./action";
+import { GET_USER, ADD_USER } from "./action";
 
 const initalState = {};
 
 export const userReducer = (state = initalState, action) => {
-  if (action.type === GET_USER) {
-    return { state, ...action.payload };
+  if (action.type === ADD_USER) {
+    return { ...state, ...action.payload };
   }
   return state;
 };
