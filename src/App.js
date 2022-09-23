@@ -7,6 +7,7 @@ import Hero from "./components/Hero";
 import { store, persistor } from "./store";
 import { PersistGate } from "redux-persist/integration/react";
 import UserDetails from "./Pages/UserDetails";
+import ReceiverDetails from "./Pages/ReceiverDetails";
 import Errors from "./Pages/Errors";
 
 function App() {
@@ -15,8 +16,9 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <div>
           {/* <Header /> */}
-          <Errors />
-          {/* <UserDetails /> */}
+          {/* <Errors /> */}
+          <ReceiverDetails />
+          <UserDetails />
           {/* <Hero />
           <Pays />
           <Footer /> */}

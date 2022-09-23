@@ -1,5 +1,5 @@
-import Error from "../components/Error";
-import errors from "../Constants/errors";
+import Error from "../components/gpay/Error";
+import errors from "../Constants/gpay/errors";
 
 function Errors() {
   console.log(errors);

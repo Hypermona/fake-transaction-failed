@@ -9,7 +9,7 @@ import MessageIcon from "@mui/icons-material/Message";
 import Stack from "@mui/material/Stack";
 import { grey, blue } from "@mui/material/colors";
 import { useDispatch, useSelector } from "react-redux";
-import { addError } from "../store/error";
+import { addError } from "../../store/error";
 
 export default function Error({ id, title, signal, subtitle, description, buttons, elevation }) {
   const { error_id } = useSelector((state) => state.error);

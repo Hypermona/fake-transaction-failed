@@ -1,4 +1,4 @@
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../store/user/action";
@@ -60,6 +60,7 @@ export default function UserDetails() {
           flexDirection: "column",
           maxWidth: "500px",
           margin: "auto",
+          textAlign: "center",
         }}
       >
         <Typography variant={"button"} sx={{ margin: "10px" }}>
@@ -99,7 +100,7 @@ export default function UserDetails() {
           name="firstName"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="FirstName" />
+            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="First Name" />
           )}
         />
 
@@ -107,7 +108,7 @@ export default function UserDetails() {
           name="lastName"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="LastName" />
+            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="Last Name" />
           )}
         />
         <Controller
@@ -121,7 +122,7 @@ export default function UserDetails() {
           name="upi"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="Upi id" />
+            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="UPI id" />
           )}
         />
 
