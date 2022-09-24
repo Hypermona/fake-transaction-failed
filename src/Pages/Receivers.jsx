@@ -64,14 +64,17 @@ export default function Receivers() {
         </Button>
       </Stack>
       <Divider />
-      <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-        {receivers?.map((r) => (
-          <Item fullName={r.fullName} mobile={r.mobile} upi={r.upi} photo={r.photo} />
-        ))}
-      </List>
-      <Typography align="center" color={"GrayText"}>
-        Add new recipient by clicking ADD NEW button
-      </Typography>
+      {receivers ? (
+        <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+          {receivers?.map((r) => (
+            <Item fullName={r.fullName} mobile={r.mobile} upi={r.upi} photo={r.photo} />
+          ))}
+        </List>
+      ) : (
+        <Typography align="center" color={"GrayText"}>
+          Add new recipient by clicking ADD NEW button
+        </Typography>
+      )}
     </>
   );
 }
