@@ -9,6 +9,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import UserDetails from "./Pages/UserDetails";
 import ReceiverDetails from "./Pages/ReceiverDetails";
 import Errors from "./Pages/Errors";
+import Payment from "./components/gpay/Payment";
+import Receivers from "./Pages/Receivers";
 
 function App() {
   return (
@@ -17,11 +19,13 @@ function App() {
         <div>
           {/* <Header /> */}
           {/* <Errors /> */}
-          <ReceiverDetails />
-          <UserDetails />
-          {/* <Hero />
-          <Pays />
-          <Footer /> */}
+          {/* <ReceiverDetails /> */}
+          {/* <UserDetails /> */}
+          {/* <Hero /> */}
+          {/* <Pays /> */}
+          {/* <Payment /> */}
+          <Receivers />
+          {/* <Footer /> */}
         </div>
       </PersistGate>
     </Provider>
