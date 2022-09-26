@@ -4,14 +4,18 @@ import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import { Stack } from "@mui/material";
 import { useForm } from "react-hook-form";
 import "./payment.css";
-import { Button } from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import PrevNextButton from "../PrevNextButton";
 import { setPayment } from "../../store/receivers/action";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 function Payment() {
-  const upi = "mohans8050@okaxis";
+  const { state } = useLocation();
+  const { upi } = state;
+  const receivers = useSelector((state) => state.receivers);
+  console.log(upi, receivers);
+  const { fullName, mobile, photo } = receivers.filter((r) => r.upi === upi)[0];
+  // const upi = "mohans8050@okaxis";
   const dispatch = useDispatch();
   const onSubmit = (data) => dispatch(setPayment(upi, data.amount, data.note));
   const { register, handleSubmit, watch } = useForm();
@@ -27,15 +31,19 @@ function Payment() {
         textAlign: "center",
       }}
     >
-      <Avatar alt="ks" src="hhi" sx={{ bgcolor: "purple", width: 64, height: 64, margin: "5px" }} />
+      <Avatar
+        alt={fullName}
+        src={`${photo || "c//fake.png"}`}
+        sx={{ bgcolor: "purple", width: 64, height: 64, margin: "5px" }}
+      />
       <Typography sx={{ fontWeight: 500 }} color="text.primary">
-        Paying Kavya Naik
+        Paying {fullName}
       </Typography>
-      <Typography>+91 973194300</Typography>
+      <Typography>+91 {mobile}</Typography>
       <Typography variant="body2">
-        Banking name: <span style={{ textTransform: "uppercase" }}>Kavya naik</span>{" "}
+        Banking name: <span style={{ textTransform: "uppercase" }}>{fullName}</span>{" "}
       </Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
         <Stack direction={"row"} justifyContent="center">
           <CurrencyRupeeIcon sx={{ marginTop: "20px" }} />
 
@@ -56,26 +64,11 @@ function Payment() {
           {...register("note")}
           style={{ width: `${watch("note")?.length + 10}ch` }}
         />
-        <div style={{ position: "absolute", bottom: 10, right: 10, margin: 10 }}>
-          <Button
-            size="large"
-            type="submit"
-            variant="contained"
-            sx={{ borderRadius: 18 }}
-            endIcon={<ArrowForwardIosIcon />}
-          >
-            pay
-          </Button>
-        </div>
-        <div style={{ position: "absolute", bottom: 10, left: 10, margin: 10 }}>
-          <Button
-            size="large"
-            variant="outlined"
-            sx={{ borderRadius: 18 }}
-            startIcon={<ArrowBackIosNewIcon />}
-          >
-            edit
-          </Button>
+        <div style={{ position: "sticky", bottom: 30, marginTop: "30vh" }}>
+          <PrevNextButton
+            prev={{ to: `/receivers/${upi}`, text: "edit", state: {} }}
+            next={{ to: `/transaction/${upi}`, text: "pay", state: {} }}
+          />
         </div>
       </form>
     </Stack>

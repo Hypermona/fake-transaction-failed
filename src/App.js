@@ -11,22 +11,27 @@ import ReceiverDetails from "./Pages/ReceiverDetails";
 import Errors from "./Pages/Errors";
 import Payment from "./components/gpay/Payment";
 import Receivers from "./Pages/Receivers";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <div>
-          {/* <Header /> */}
-          {/* <Errors /> */}
-          {/* <ReceiverDetails /> */}
-          {/* <UserDetails /> */}
-          {/* <Hero /> */}
-          {/* <Pays /> */}
-          {/* <Payment /> */}
-          <Receivers />
-          {/* <Footer /> */}
-        </div>
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="errors" element={<Errors />} />
+
+            <Route path="receivers/:id" element={<ReceiverDetails />} />
+            <Route path="user" element={<UserDetails />} />
+
+            <Route path="/" element={<Hero />} />
+            <Route path="pays" element={<Pays />} />
+            <Route path="payment" element={<Payment />} />
+            <Route path="receivers" element={<Receivers />} />
+          </Routes>
+          <Footer />
+        </BrowserRouter>
       </PersistGate>
     </Provider>
   );

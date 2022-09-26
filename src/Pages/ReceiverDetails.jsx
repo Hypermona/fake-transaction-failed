@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import PrevNextButton from "../components/PrevNextButton";
+
 // fullName
 // mobile no
 // upi id
@@ -37,8 +39,9 @@ export default function ReceiverDetails({ upi_id }) {
         dispatch(addReceiver(data));
       };
       reader.readAsDataURL(data.photo);
+    } else {
+      dispatch(addReceiver(data));
     }
-    dispatch(addReceiver(data));
   };
 
   //watching profile photo changes
@@ -63,7 +66,7 @@ export default function ReceiverDetails({ upi_id }) {
         }}
       >
         <Typography variant={"button"} sx={{ margin: "10px" }}>
-          Receiver Details
+          Recipient Details
         </Typography>
         <label htmlFor="photo-btn">
           {photoPrew || receiver?.photo ? (
@@ -118,9 +121,12 @@ export default function ReceiverDetails({ upi_id }) {
         />
 
         <br />
-        <Button type="submit" variant="contained" sx={{ margin: "0 10px 10px 10px" }}>
-          Submit
-        </Button>
+        <input type={"submit"} id={"receiver-details-form"} hidden />
+        <PrevNextButton
+          id={"receiver-details-form"}
+          prev={{ to: `/receivers`, text: "back", state: {} }}
+          next={{ to: `/pays`, text: "Save & Next", state: {} }}
+        />
       </Box>
     </form>
   );

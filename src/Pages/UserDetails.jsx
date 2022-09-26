@@ -8,12 +8,16 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import { useLocation } from "react-router-dom";
+import PrevNextButton from "../components/PrevNextButton";
 // first name
 // last name
 // mobile no
 // upi id
 // photo
 export default function UserDetails() {
+  const location = useLocation();
+  const start = location?.state || false;
   const [image, setImage] = useState(null);
   const { firstName, lastName, mobile, upi, photo } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -38,8 +42,9 @@ export default function UserDetails() {
         dispatch(addUser(data));
       };
       reader.readAsDataURL(data.photo);
+    } else {
+      dispatch(addUser(data));
     }
-    dispatch(addUser(data));
   };
 
   //watching profile photo changes
@@ -127,9 +132,20 @@ export default function UserDetails() {
         />
 
         <br />
-        <Button type="submit" variant="contained" sx={{ margin: "0 10px 10px 10px" }}>
-          Submit
-        </Button>
+        {start ? (
+          <>
+            <button type="submit" id="user-details-form" hidden></button>
+            <PrevNextButton
+              id={"user-details-form"}
+              prev={{ to: `/`, text: "Home", state: {} }}
+              next={{ to: `/receivers`, text: "Next", state: {} }}
+            />
+          </>
+        ) : (
+          <Button type="submit" variant="contained" sx={{ margin: "0 10px 10px 10px" }}>
+            Submit
+          </Button>
+        )}
       </Box>
     </form>
   );

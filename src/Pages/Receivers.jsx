@@ -12,20 +12,14 @@ import { red } from "@mui/material/colors";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import { Link } from "react-router-dom";
 
 const Item = ({ fullName, mobile, upi, photo }) => {
   return (
-    <>
-      <ListItem
-        alignItems="flex-start"
-        secondaryAction={
-          <IconButton>
-            <DeleteForeverRounded sx={{ color: red[900] }} />
-          </IconButton>
-        }
-      >
+    <Link to={"/pays"} state={{ upi }} style={{ textDecoration: "none" }}>
+      <ListItem alignItems="flex-start" secondaryAction={<Button>Delete</Button>}>
         <ListItemAvatar>
-          <Avatar alt={fullName} src={photo || "c//fake.png"} />
+          <Avatar alt={fullName} src={`${photo || "c//fake.png"}`} />
         </ListItemAvatar>
         <ListItemText
           primary={fullName}
@@ -39,14 +33,16 @@ const Item = ({ fullName, mobile, upi, photo }) => {
               >
                 {upi}
               </Typography>
-              {" +91"}
-              {mobile}
+              <Typography color="text.secondary" component="span" sx={{ display: "block" }}>
+                {" +91 "}
+                {mobile}
+              </Typography>
             </>
           }
         />
       </ListItem>
       <Divider variant="inset" component="li" />
-    </>
+    </Link>
   );
 };
 
@@ -59,22 +55,43 @@ export default function Receivers() {
           <Typography variant="h6">Your Paying to</Typography>
           <Typography variant="caption">Select one to continue</Typography>
         </div>
-        <Button startIcon={<ControlPointIcon />} variant={"contained"} size="small">
-          Add New
-        </Button>
+        <Link to="new" style={{ textDecoration: "none" }}>
+          <Button startIcon={<ControlPointIcon />} variant={"contained"}>
+            Add New
+          </Button>
+        </Link>
       </Stack>
       <Divider />
-      {receivers ? (
-        <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-          {receivers?.map((r) => (
-            <Item fullName={r.fullName} mobile={r.mobile} upi={r.upi} photo={r.photo} />
+      {receivers?.length > 0 ? (
+        <List
+          sx={{
+            width: "min(100vw,450px)",
+            bgcolor: "background.paper",
+            cursor: "pointer",
+          }}
+        >
+          {receivers?.map((r, i) => (
+            <Item
+              fullName={r.fullName}
+              mobile={r.mobile}
+              upi={r.upi}
+              photo={r.photo}
+              key={r.upi + i}
+            />
           ))}
         </List>
       ) : (
-        <Typography align="center" color={"GrayText"}>
-          Add new recipient by clicking ADD NEW button
-        </Typography>
+        <Stack justifyContent={"center"} height={"80vh"}>
+          <Typography align="center" color={"GrayText"}>
+            Add new recipient by clicking ADD NEW button
+          </Typography>
+        </Stack>
       )}
     </>
   );
+}
+{
+  /* <IconButton>
+  <DeleteForeverRounded sx={{ color: red[900] }} />
+</IconButton>; */
 }
