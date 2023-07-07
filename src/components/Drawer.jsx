@@ -14,8 +14,10 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import AdbIcon from "@mui/icons-material/Adb";
+import { useSelector } from "react-redux";
 
-export default (data, anchor) => {
+const DrawerBox = (data, anchor) => {
+  const user = useSelector((state) => state.user);
   const [state, setState] = useState({
     left: false,
     right: false,
@@ -80,7 +82,11 @@ export default (data, anchor) => {
         onClick={toggleDrawer(anchor, true)}
         color="inherit"
       >
-        {anchor === "left" ? <MenuIcon /> : <Avatar alt="Remy Sharp" />}
+        {anchor === "left" ? (
+          <MenuIcon />
+        ) : (
+          <Avatar alt={user.firstname} src={`${user?.photo || "c//fake.png"}`} />
+        )}
       </IconButton>
       <Drawer anchor={anchor} open={Boolean(state[anchor])} onClose={toggleDrawer(anchor, false)}>
         {list(data, anchor)}
@@ -88,3 +94,4 @@ export default (data, anchor) => {
     </>
   );
 };
+export default DrawerBox;

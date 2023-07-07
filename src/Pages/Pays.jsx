@@ -10,14 +10,19 @@ import { useDispatch, useSelector } from "react-redux";
 import pays from "../Constants/pays";
 import { grey, blue } from "@mui/material/colors";
 import PrevNextButton from "../components/PrevNextButton";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Pays() {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const [available, setAvailable] = useState(false);
-  const { upi } = state;
+  useEffect(() => {
+    if (!state && state.upi === "") {
+      navigate("/");
+    }
+  }, []);
 
-  console.log(available);
+  console.log(state);
 
   const PayCard = ({ pay }) => {
     const { pay: _pay } = useSelector((state) => state.user);
@@ -73,7 +78,7 @@ export default function Pays() {
         {available && (
           <PrevNextButton
             prev={{ to: `/receivers`, text: "back", state: {} }}
-            next={{ to: `/payment`, text: "Save & Next", state: { upi } }}
+            next={{ to: `/errors`, text: "Save & Next", state: { upi: state?.upi } }}
           />
         )}
       </div>

@@ -10,6 +10,10 @@ import Avatar from "@mui/material/Avatar";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import { useLocation } from "react-router-dom";
 import PrevNextButton from "../components/PrevNextButton";
+import Compressor from "compressorjs";
+import userSchema from "../Constants/schema/user";
+import { joiResolver } from "@hookform/resolvers/joi";
+
 // first name
 // last name
 // mobile no
@@ -22,7 +26,14 @@ export default function UserDetails() {
   const { firstName, lastName, mobile, upi, photo } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const { control, handleSubmit, watch } = useForm({
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    resolver: joiResolver(userSchema),
     defaultValues: {
       firstName: firstName,
       lastName: lastName,
@@ -31,17 +42,25 @@ export default function UserDetails() {
       photo: photo,
     },
   });
-
+  console.log("errors", Object.keys(errors).length);
   // Submit your data into Redux store
   const onSubmit = (data) => {
     if (typeof data.photo !== "string" && data.photo) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result.toString());
-        data = { ...data, photo: reader.result.toString() };
-        dispatch(addUser(data));
-      };
-      reader.readAsDataURL(data.photo);
+      new Compressor(data.photo, {
+        quality: 0.1,
+        success(result) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setImage(reader.result.toString());
+            data = { ...data, photo: reader.result.toString() };
+            dispatch(addUser(data));
+          };
+          reader.readAsDataURL(result);
+        },
+        error(err) {
+          console.log(err.message);
+        },
+      });
     } else {
       dispatch(addUser(data));
     }
@@ -105,7 +124,13 @@ export default function UserDetails() {
           name="firstName"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="First Name" />
+            <TextField
+              {...field}
+              sx={{ margin: "0 10px 10px 10px" }}
+              label="First Name"
+              error={errors.firstName ? true : false}
+              helperText={errors.firstName?.message}
+            />
           )}
         />
 
@@ -113,21 +138,41 @@ export default function UserDetails() {
           name="lastName"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="Last Name" />
+            <TextField
+              {...field}
+              sx={{ margin: "0 10px 10px 10px" }}
+              label="Last Name"
+              error={errors.lastName ? true : false}
+              helperText={errors.lastName?.message}
+            />
           )}
         />
         <Controller
           name="mobile"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="Mobile" />
+            <TextField
+              {...field}
+              sx={{ margin: "0 10px 10px 10px" }}
+              label="Mobile"
+              error={errors.mobile ? true : false}
+              helperText={
+                errors.mobile ? "Please enter valid mobile number without country code" : ""
+              }
+            />
           )}
         />
         <Controller
           name="upi"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="UPI id" />
+            <TextField
+              {...field}
+              sx={{ margin: "0 10px 10px 10px" }}
+              label="UPI id"
+              error={errors.upi ? true : false}
+              helperText={errors.upi ? "Please enter a valid UPI id eg: 'example@okaxis'" : ""}
+            />
           )}
         />
 
@@ -137,12 +182,18 @@ export default function UserDetails() {
             <button type="submit" id="user-details-form" hidden></button>
             <PrevNextButton
               id={"user-details-form"}
+              disable={Boolean(Object.keys(errors).length)}
               prev={{ to: `/`, text: "Home", state: {} }}
               next={{ to: `/receivers`, text: "Next", state: {} }}
             />
           </>
         ) : (
-          <Button type="submit" variant="contained" sx={{ margin: "0 10px 10px 10px" }}>
+          <Button
+            type="submit"
+            disabled={Boolean(Object.keys(errors).length)}
+            variant="contained"
+            sx={{ margin: "0 10px 10px 10px" }}
+          >
             Submit
           </Button>
         )}

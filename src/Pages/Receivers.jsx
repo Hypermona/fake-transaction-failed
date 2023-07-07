@@ -13,36 +13,44 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { Link } from "react-router-dom";
+import { removeReceiver } from "../store/receivers/action";
+import { useDispatch } from "react-redux";
 
 const Item = ({ fullName, mobile, upi, photo }) => {
+  const dispatch = useDispatch();
   return (
-    <Link to={"/pays"} state={{ upi }} style={{ textDecoration: "none" }}>
-      <ListItem alignItems="flex-start" secondaryAction={<Button>Delete</Button>}>
-        <ListItemAvatar>
-          <Avatar alt={fullName} src={`${photo || "c//fake.png"}`} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={fullName}
-          secondary={
-            <>
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="body2"
-                color="text.primary"
-              >
-                {upi}
-              </Typography>
-              <Typography color="text.secondary" component="span" sx={{ display: "block" }}>
-                {" +91 "}
-                {mobile}
-              </Typography>
-            </>
-          }
-        />
+    <>
+      <ListItem
+        alignItems="flex-start"
+        secondaryAction={<Button onClick={() => dispatch(removeReceiver(upi))}>Delete</Button>}
+      >
+        <Link to={"/pays"} state={{ upi }} style={{ textDecoration: "none" }}>
+          <ListItemAvatar>
+            <Avatar alt={fullName} src={`${photo || "c//fake.png"}`} />
+          </ListItemAvatar>
+          <ListItemText
+            primary={fullName}
+            secondary={
+              <>
+                <Typography
+                  sx={{ display: "inline" }}
+                  component="span"
+                  variant="body2"
+                  color="text.primary"
+                >
+                  {upi}
+                </Typography>
+                <Typography color="text.secondary" component="span" sx={{ display: "block" }}>
+                  {" +91 "}
+                  {mobile}
+                </Typography>
+              </>
+            }
+          />
+        </Link>
       </ListItem>
       <Divider variant="inset" component="li" />
-    </Link>
+    </>
   );
 };
 

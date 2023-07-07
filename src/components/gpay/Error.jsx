@@ -10,28 +10,38 @@ import Stack from "@mui/material/Stack";
 import { grey, blue } from "@mui/material/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { addError } from "../../store/error";
+import { useMatch } from "react-router-dom";
 
-export default function Error({ id, title, signal, subtitle, description, buttons, elevation }) {
-  const { error_id } = useSelector((state) => state.error);
+export default function Error({
+  id,
+  title,
+  signal,
+  subtitle,
+  description,
+  buttons,
+  elevation = 0,
+}) {
+  const match = useMatch("/transaction");
+
+  const { id: error_id } = useSelector((state) => state.error);
   const dispatch = useDispatch();
   return (
     <div
       style={{
         margin: 0,
         padding: 1,
-        borderRadius: 5,
-        background: error_id === id ? blue[500] : "inherit",
+        borderRadius: 10,
+        background: error_id !== id || Boolean(match) ? "inherit" : blue[500],
       }}
     >
       <Card
         sx={{
-          minWidth: 275,
-          maxWidth: 500,
+          maxWidth: "min(100vw,450px)",
           margin: 2,
           cursor: "pointer",
         }}
         elevation={elevation}
-        onClick={() => dispatch(addError(id))}
+        onClick={() => dispatch(addError({ id, title, signal, subtitle, description, buttons }))}
       >
         <CardContent>
           <Stack direction="row">

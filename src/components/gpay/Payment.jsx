@@ -7,24 +7,30 @@ import "./payment.css";
 import PrevNextButton from "../PrevNextButton";
 import { setPayment } from "../../store/receivers/action";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function Payment() {
   const { state } = useLocation();
-  const { upi } = state;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!state) {
+      navigate("/");
+    }
+  }, []);
   const receivers = useSelector((state) => state.receivers);
-  console.log(upi, receivers);
-  const { fullName, mobile, photo } = receivers.filter((r) => r.upi === upi)[0];
+  console.log(state, receivers);
+  const receiver = receivers?.filter((r) => r.upi === state?.upi)[0];
   // const upi = "mohans8050@okaxis";
   const dispatch = useDispatch();
-  const onSubmit = (data) => dispatch(setPayment(upi, data.amount, data.note));
+  const onSubmit = (data) => dispatch(setPayment(state?.upi, data.amount, data.note));
   const { register, handleSubmit, watch } = useForm();
   return (
     <Stack
       alignItems={"center"}
       direction={"column"}
       sx={{
-        width: "min(100vw,450px)",
+        width: "min(100vw,400px)",
         height: "100vh",
         paddingTop: 5,
         background: "rgb(245, 245, 245)",
@@ -32,16 +38,16 @@ function Payment() {
       }}
     >
       <Avatar
-        alt={fullName}
-        src={`${photo || "c//fake.png"}`}
+        alt={receiver?.fullName}
+        src={`${receiver?.photo || "c//fake.png"}`}
         sx={{ bgcolor: "purple", width: 64, height: 64, margin: "5px" }}
       />
       <Typography sx={{ fontWeight: 500 }} color="text.primary">
-        Paying {fullName}
+        Paying {receiver?.fullName}
       </Typography>
-      <Typography>+91 {mobile}</Typography>
+      <Typography>+91 {receiver?.mobile}</Typography>
       <Typography variant="body2">
-        Banking name: <span style={{ textTransform: "uppercase" }}>{fullName}</span>{" "}
+        Banking name: <span style={{ textTransform: "uppercase" }}>{receiver?.fullName}</span>{" "}
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
         <Stack direction={"row"} justifyContent="center">
@@ -64,10 +70,12 @@ function Payment() {
           {...register("note")}
           style={{ width: `${watch("note")?.length + 10}ch` }}
         />
+        <button type="submit" id="make_payment_form" hidden></button>
         <div style={{ position: "sticky", bottom: 30, marginTop: "30vh" }}>
           <PrevNextButton
-            prev={{ to: `/receivers/${upi}`, text: "edit", state: {} }}
-            next={{ to: `/transaction/${upi}`, text: "pay", state: {} }}
+            id="make_payment_form"
+            prev={{ to: `/errors`, text: "edit", state: { upi: state?.upi } }}
+            next={{ to: `/transaction/`, text: "pay", state: { upi: state?.upi } }}
           />
         </div>
       </form>

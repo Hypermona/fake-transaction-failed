@@ -1,4 +1,4 @@
-import { GET_RECEIVER, ADD_RECEIVER, SET_PAYMENT } from "./action";
+import { REMOVE_RECEIVER, ADD_RECEIVER, SET_PAYMENT } from "./action";
 import produce from "immer";
 
 const initalState = [];
@@ -15,6 +15,12 @@ export const receiverReducer = (state = initalState, { type, payload }) => {
         receiver["note"] = payload.note;
       }
     });
+  }
+  if (type === REMOVE_RECEIVER) {
+    // return produce(state, (draft) => {
+    //   draft = draft.filter((r) => r.upi !== payload);
+    // });
+    return [...state.filter((r) => r.upi !== payload)];
   }
   return state;
 };

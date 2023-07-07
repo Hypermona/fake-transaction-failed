@@ -1,10 +1,11 @@
 const ADD_ERROR = "ADD_ERROR";
 const REMOVE_ERROR = "REMOVE_ERROR";
 
-export const addError = (id) => ({
+export const addError = (error) => ({
   type: ADD_ERROR,
-  payload: id,
+  payload: error,
 });
+
 export const removeError = () => ({
   type: REMOVE_ERROR,
 });
@@ -12,10 +13,8 @@ export const removeError = () => ({
 const initialState = {};
 export const errorReducer = (state = initialState, action) => {
   if (action.type === ADD_ERROR) {
-    return { ...state, error_id: action.payload };
+    return { ...state, ...action.payload };
   }
-  if (action.type === REMOVE_ERROR) {
-    return { ...state, error_id: "" };
-  }
+
   return state;
 };

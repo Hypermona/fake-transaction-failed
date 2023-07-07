@@ -4,7 +4,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
-function PrevNextButton({ prev, next, id }) {
+function PrevNextButton({ prev, next, id, disable }) {
   return (
     <Stack direction="row" justifyContent={"space-around"} width={"min(100vw,450px)"}>
       <Link to={prev.to} state={prev.state} style={{ textDecoration: "none" }}>
@@ -21,6 +21,7 @@ function PrevNextButton({ prev, next, id }) {
           onClick={() => {
             document.getElementById(id)?.click();
           }}
+          disabled={disable}
           type="submit"
           variant="contained"
           sx={{ borderRadius: 18 }}

@@ -9,6 +9,9 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import PrevNextButton from "../components/PrevNextButton";
+import Compressor from "compressorjs";
+import receiverSchema from "../Constants/schema/receiver";
+import { joiResolver } from "@hookform/resolvers/joi";
 
 // fullName
 // mobile no
@@ -17,10 +20,18 @@ import PrevNextButton from "../components/PrevNextButton";
 export default function ReceiverDetails({ upi_id }) {
   const [image, setImage] = useState(null);
   const receivers = useSelector((state) => state.receivers);
-  const receiver = receivers.filter((receiv) => receiv.upi === upi_id)[0];
+  console.log(receivers);
+  const receiver = receivers?.filter((receiv) => receiv.upi === upi_id)[0];
   const dispatch = useDispatch();
 
-  const { control, handleSubmit, watch } = useForm({
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    resolver: joiResolver(receiverSchema),
     defaultValues: {
       fullName: receiver?.fullName || "",
       mobile: receiver?.mobile || "",
@@ -32,18 +43,26 @@ export default function ReceiverDetails({ upi_id }) {
   // Submit your data into Redux store
   const onSubmit = (data) => {
     if (typeof data.photo !== "string" && data.photo) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result.toString());
-        data = { ...data, photo: reader.result.toString() };
-        dispatch(addReceiver(data));
-      };
-      reader.readAsDataURL(data.photo);
+      new Compressor(data.photo, {
+        quality: 0.1,
+        success(result) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setImage(reader.result.toString());
+            data = { ...data, photo: reader.result.toString() };
+            dispatch(addReceiver(data));
+          };
+          reader.readAsDataURL(result);
+        },
+        error(err) {
+          console.log(err.message);
+        },
+      });
     } else {
       dispatch(addReceiver(data));
     }
   };
-
+  console.log("hi");
   //watching profile photo changes
   const photoPrew = watch("photo");
   useEffect(() => {
@@ -101,7 +120,13 @@ export default function ReceiverDetails({ upi_id }) {
           name="fullName"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="Full Name" />
+            <TextField
+              {...field}
+              sx={{ margin: "0 10px 10px 10px" }}
+              label="Full Name"
+              error={errors.fullName ? true : false}
+              helperText={errors.fullName?.message}
+            />
           )}
         />
 
@@ -109,14 +134,28 @@ export default function ReceiverDetails({ upi_id }) {
           name="mobile"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="Mobile" />
+            <TextField
+              {...field}
+              sx={{ margin: "0 10px 10px 10px" }}
+              label="Mobile"
+              error={errors.mobile ? true : false}
+              helperText={
+                errors.mobile ? "Please enter valid mobile number without country code" : ""
+              }
+            />
           )}
         />
         <Controller
           name="upi"
           control={control}
           render={({ field }) => (
-            <TextField {...field} sx={{ margin: "0 10px 10px 10px" }} label="UPI id" />
+            <TextField
+              {...field}
+              sx={{ margin: "0 10px 10px 10px" }}
+              label="UPI id"
+              error={errors.upi ? true : false}
+              helperText={errors.upi ? "Please enter a valid UPI id eg: 'example@okaxis'" : ""}
+            />
           )}
         />
 
@@ -124,8 +163,9 @@ export default function ReceiverDetails({ upi_id }) {
         <input type={"submit"} id={"receiver-details-form"} hidden />
         <PrevNextButton
           id={"receiver-details-form"}
+          disable={Boolean(Object.keys(errors).length)}
           prev={{ to: `/receivers`, text: "back", state: {} }}
-          next={{ to: `/pays`, text: "Save & Next", state: {} }}
+          next={{ to: `/pays`, text: "Save & Next", state: { upi: watch("upi") } }}
         />
       </Box>
     </form>
